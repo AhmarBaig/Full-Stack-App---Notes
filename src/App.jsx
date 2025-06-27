@@ -1,11 +1,10 @@
-import { useState } from 'react'
 import './App.css'
+import { Note } from './Note'
 
 function App() {
 
   return (
-    <>
-    </>
+    <Note />
   )
 }
 
