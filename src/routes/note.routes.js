@@ -1,3 +1,5 @@
+// Router - Uses controller
+
 import express from "express";
 const router = express.Router();
 import noteController from "../controllers/note.controller.js";

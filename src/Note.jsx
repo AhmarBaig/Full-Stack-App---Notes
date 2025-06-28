@@ -1,8 +1,9 @@
+// Front-End of Note object
 import { useState } from 'react'
 
 export function Note() {
     /** What is a Note?
-     * A note is defined as something that contains a title, a date(createdAt), content
+     * A note contains a title, a date(createdAt), content
      * User interactions: CRUD operations
      * C = Create a new note (Create Button)
      * R = Read the note (Click on note)
@@ -41,6 +42,7 @@ export function Note() {
         }
     };
 
+    // Handle saving the data, fetch POST request to backend
     const handleSubmit = async() => {
         try {
             const res = await fetch('http://localhost:5000/api/notes', {
@@ -84,8 +86,6 @@ export function Note() {
             <button onClick={handleSubmit}>Save</button>
             <button>Exit</button>
         </div>
-
-        
     )
 }
 
