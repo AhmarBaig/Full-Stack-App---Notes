@@ -1,4 +1,4 @@
-// Front-End of Note object
+// Data Model of Note
 import { useState } from 'react'
 
 export function Note() {
@@ -60,6 +60,7 @@ export function Note() {
         }
     }
 
+    // Front-end of Note
     return (
         <div className="note">
             <label>Title: 
