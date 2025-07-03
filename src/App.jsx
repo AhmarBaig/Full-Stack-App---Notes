@@ -2,20 +2,39 @@
 import './App.css'
 import { useState, useEffect } from 'react'
 import { NoteModal } from './NoteModal'
+import { CreateNoteModal } from './CreateNoteModal'
 
 function App() {
 
+  // State Handling
   const [notes, setNotes] = useState([]);
   const [loading, setLoading] = useState(true);
   const [noteCreated, setNoteCreated] = useState("");
   const [modalNote, setModalNote] = useState(null);
+  const [createNoteModal, setCreateNoteModal] = useState(null);
+  // const [noteUpdated, setNoteUpdated] = useState("");
 
-  // Modal Logic
+  const newNote = {
+    title: "",
+    content: ""
+  }
+
+  const openCreateNoteModal = (note) => {
+    setCreateNoteModal( {note, visible: false} );
+    setTimeout(() => { setCreateNoteModal({ note, visible: true }), 0});
+  };
+  const closeCreateNoteModal = () => {
+    if (!newNote) return;
+
+    setCreateNoteModal(prev => ({...prev, visible: false}));
+    setTimeout(() => {setCreateNoteModal(null)}, 300);
+  };
+
+  // Modal Logic - Opening and Closing
   const openModal = (note) => {
     setModalNote( {note, visible: false} );
     setTimeout(() => { setModalNote({ note, visible: true }), 0});
   };
-
   const closeModal = () => {
     if (!modalNote) return;
 
@@ -23,10 +42,12 @@ function App() {
     setTimeout(() => {setModalNote(null)}, 300);
   };
 
-  const saveNote = (updatedNote) => {
-    // Here you would update your note in state/database
-    console.log("Saving note:", updatedNote);
-  };
+  // Notes are re-fetched on UPDATE and CREATE operations
+  const fetchNotes = async () => {
+    const res = await fetch("http://localhost:5000/api/notes");
+    const data = await res.json();
+    setNotes(data);
+  }
 
   // GET request on first load-in
   useEffect(() => {
@@ -57,9 +78,16 @@ function App() {
     }
   }, [noteCreated]);
 
+  
+
   return (
 
-    <div className="notes">
+    <div>
+      <h1>Simple Notes Application</h1>
+      <button onClick={() => openCreateNoteModal(newNote)}>+ Create New Note</button>
+
+      <div className="notes">
+
         {notes.map(note => (
         <div key={note._id} className="note-info" onClick={() => openModal(note)}>
             <div className="note-header">
@@ -70,15 +98,24 @@ function App() {
         </div>
         ))}
 
+        {createNoteModal && (
+          <CreateNoteModal
+            newNote={createNoteModal}
+            closeModal={closeCreateNoteModal}
+            onSaveSuccess={fetchNotes}
+          />
+        )}
+
         {modalNote && (
           <NoteModal 
-          modalNote={modalNote}
-          closeModal={closeModal}
-          saveNote={saveNote}
-        />
+            modalNote={modalNote}
+            closeModal={closeModal}
+            onSaveSuccess={fetchNotes}
+          />
         )}
-        
+      </div>
     </div>
+    
     
   )
 }
